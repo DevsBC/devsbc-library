@@ -1,0 +1,93 @@
+<ng-container *ngIf="ready">
+  <form [formGroup]="form" class="animate__animated animate__fadeIn">
+
+      <mat-card class="form-card">
+
+          <mat-card-content>
+
+             <!-- SECTION FOR EXTRA ADDED FROM PARENT -->
+             <div #top >
+              <ng-content select="[slot='top']"></ng-content>
+            </div>
+            <span *ngIf="top.children.length == 0"></span>
+            <!-- SECTION FOR EXTRA ADDED FROM PARENT -->
+
+            <div class="container">
+                <div class="row" *ngFor="let row of data.view">
+
+                    <div class="col" *ngFor="let col of row.cols">
+                        <mat-form-field class="full-width">
+
+                            <ng-container *ngIf="col.element === 'input'">
+                                <input matInput [placeholder]="col.placeholder" [formControlName]="col.name" [type]="col.type" *ngIf="!col.callback" [required]="col.required">
+
+                                <ng-container *ngIf="col.callback">
+
+                                    <ng-container *ngIf="col.callback.event === 'keyup'">
+                                        <input matInput [placeholder]="col.placeholder" [formControlName]="col.name" [type]="col.type" (keyup)="col.callback.function($event.target, form)" [required]="col.required">
+                                    </ng-container>
+
+                                </ng-container>
+                            </ng-container>
+
+                            <ng-container *ngIf="col.element === 'textarea'">
+                                <textarea matInput [placeholder]="col.placeholder" [formControlName]="col.name" *ngIf="!col.callback" rows="6" [required]="col.required"></textarea>
+
+                                <ng-container *ngIf="col.callback">
+
+                                    <ng-container *ngIf="col.callback.event === 'keyup'">
+                                        <textarea matInput [placeholder]="col.placeholder" [formControlName]="col.name" *ngIf="!col.callback" (keyup)="col.callback.function($event.target, form)" [required]="col.required"></textarea>
+                                    </ng-container>
+
+                                </ng-container>
+                            </ng-container>
+
+                            <ng-container *ngIf="col.element === 'select'">
+                                <mat-select [formControlName]="col.name" [multiple]="col.multiple" [placeholder]="col.placeholder">
+                                    <mat-option *ngFor="let option of col.options" [value]="option">
+                                      {{ option.name }}
+                                    </mat-option>
+                                  </mat-select>
+                            </ng-container>
+
+                            <mat-error *ngIf="form.controls[col.name].hasError('required')">
+                                {{ col.placeholder }} <strong> requerido</strong>
+                            </mat-error>
+
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+
+
+              <!-- SECTION FOR EXTRA INFO ADDED FROM PARENT -->
+              <div #bottom >
+                  <ng-content  select="[slot='bottom']"></ng-content>
+              </div>
+              <span *ngIf="bottom.children.length == 0"></span>
+              <!-- SECTION FOR EXTRA INFO ADDED FROM PARENT -->
+
+          </mat-card-content>
+
+          <mat-card-actions>
+              <ng-container *ngIf="!loading">
+                  <ng-container>
+                      <button mat-raised-button color="primary" style="width: 100%;" [disabled]="data.disableButton" (click)="onSubmit()" >
+                          {{ data.labelSubmit }}
+                          <mat-icon *ngIf="loading"><mat-spinner color="accent" diameter="20"></mat-spinner></mat-icon>
+                      </button>
+                  </ng-container>
+              </ng-container>
+              <ng-container *ngIf="loading">
+                  <button mat-raised-button color="primary" style="width: 100%;" [disabled]="loading" (click)="onSubmit()" >
+                      {{ data.labelSubmit }}
+                      <mat-icon *ngIf="loading"><mat-spinner color="accent" diameter="20"></mat-spinner></mat-icon>
+                  </button>
+              </ng-container>
+          </mat-card-actions>
+
+      </mat-card>
+
+  </form>
+</ng-container>
+

@@ -1,0 +1,51 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "analytics": "cb12ab85-0346-4da7-ad59-6b50f4caa884"
+  },
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "devsbc-form": {
+      "projectType": "library",
+      "root": "projects/devsbc-form",
+      "sourceRoot": "projects/devsbc-form/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "tsConfig": "projects/devsbc-form/tsconfig.lib.json",
+            "project": "projects/devsbc-form/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/devsbc-form/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/devsbc-form/src/test.ts",
+            "tsConfig": "projects/devsbc-form/tsconfig.spec.json",
+            "karmaConfig": "projects/devsbc-form/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/devsbc-form/tsconfig.lib.json",
+              "projects/devsbc-form/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "devsbc-form"
+}
