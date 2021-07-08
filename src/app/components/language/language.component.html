@@ -1,0 +1,11 @@
+<button mat-button [matMenuTriggerFor]="menu">{{ (lang === 'es') ? 'ESPAÑOL' : 'ENGLISH' }}</button>
+<mat-menu #menu="matMenu">
+    <button mat-menu-item [class]="lang === 'es' ? 'active' : ''" (click)="switchLang('es')">
+        <img  style="margin-right: 16px;" src="./assets/flags/es.png">
+        <span>ES</span>
+    </button>
+    <button mat-menu-item [class]="lang === 'en' ? 'active' : ''" (click)="switchLang('en')">
+        <img  style="margin-right: 16px;" src="./assets/flags/en.png">
+        <span>EN</span>
+    </button>
+</mat-menu>

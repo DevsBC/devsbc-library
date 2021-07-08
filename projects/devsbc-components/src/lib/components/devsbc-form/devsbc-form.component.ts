@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { FormModel } from '../models/devsbc-form.model';
+import { FormModel } from '../../models/devsbc-form.model';
 
 @Component({
   selector: 'dbc-form',
