@@ -47,6 +47,23 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 export class AppModule { }
 ```
 
+En tu tsconfig.json
+
+```json
+{
+  "compilerOptions": {
+    ....
+    "paths": {
+      "devsbc-components": [
+        "node_modules/devsbc-components/devsbc-components",
+        "node_modules/devsbc-components/"
+      ],
+    }
+  }
+}
+
+```
+
 # Componentes
 
 <details>
@@ -354,14 +371,24 @@ Aqui un ejemplo BASICO de implementacion (BACKEND)
 ```
 
 ## Modelos
-Utiliza el siguiente modelo para comunicarte con SignIn y SignUp.  
-El servicio se encarga de guardar la sesion.
+Utiliza este modelo con la funcion setSessionName para inicializar el servicio de acuerdo a tus configuraciones.  
+Considera inicializar el servicio en el componente principal AppComponent
 ```typescript
 export interface AccessAuthModel {
-    endpoint: string; // url to HTTP CALL
-    user: any; // Your custom object for User
     sessionName: string;
     multiSession?: boolean; // if multiSession -> User saves in sessionStorage *default localStorage
+}
+```
+
+Ejemplo
+```typescript
+export class AppComponent {
+  constructor(private authService: AuthService) {
+    this.authService.setSessionName({
+      sessionName: 'my-session',
+      multiSession: false
+    });
+  }
 }
 ```
 
@@ -370,7 +397,6 @@ He aqui un ejemplo de como puedes usar este servicio
 ```typescript
  /* EXAMPLE FOR AUTH SERVICE */
   baseUrl!: string;
-  sessionName = 'my-session-name';
 
   constructor(private authService: AuthService, private modeService: ModeService) {}
 
@@ -392,14 +418,9 @@ He aqui un ejemplo de como puedes usar este servicio
 
   public async signIn(): Promise<void> {
     const user = { email: '', password: '' };
-    const access: AccessAuthModel = {
-      endpoint: this.baseUrl + '/signin',
-      user, // this object will be added to POST CALL
-      sessionName: this.sessionName
-    };
+    const endpoint = this.baseUrl + '/signin';
 
-    // the function saves the session
-    await this.authService.signIn(access);
+    await this.authService.signIn(endpoint, user);
     // show message
     // redirect
     // some stuff
@@ -407,14 +428,10 @@ He aqui un ejemplo de como puedes usar este servicio
 
   public async signUp(): Promise<void> {
     const user = { email: '', password: '', username: '', role: '' };
-    const access: AccessAuthModel = {
-      endpoint: this.baseUrl + '/signin',
-      user, // this object will be added to POST CALL
-      sessionName: this.sessionName,
-    };
+    const endpoint: this.baseUrl + '/signin',
 
     // the function saves the session
-    await this.authService.signUp(access);
+    await this.authService.signUp(endpoint, user);
     // show message
     // redirect
     // some stuff
@@ -424,8 +441,9 @@ He aqui un ejemplo de como puedes usar este servicio
 ## Funciones Disponibles
 | Funcion | Argumentos  | Valor de retorno  |
 | :---:   | :-: | :-: |
-| signUp | AccessAuthModel | void |
-| signIn | AccessAuthModel | void |
+| setSessionName | AccessAuthModel | void |
+| signUp | endpoint: string, user: any | void |
+| signIn | endpoint: string, user: any | void |
 | recoverPassword | url: string, email: string | any |
 | verifyToken | url: string, token: string | any |
 | updatePassword | url: string, email: string, password: string | any |

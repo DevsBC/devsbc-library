@@ -13,9 +13,22 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  public async signUp(access: AccessAuthModel): Promise<void> {
+  public setSessionName(access: AccessAuthModel): void {
+    try {
+      if (access) {
+        this.sessionName = access.sessionName;
+        this.isMultiSession = access.multiSession;
+      } else {
+        throw new Error('Session name is not defined');
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async signUp(endpoint: string, user: any): Promise<void> {
     // User for your model in database in Token by JSONWebToken
-    const token = await this.http.post<string>(access.endpoint, access.user).toPromise();
+    const token = await this.http.post<string>(endpoint, user).toPromise();
 
     // Decode the User Model
     const base64 = token.split('.')[1];
@@ -27,18 +40,18 @@ export class AuthService {
 
     console.log(session);
 
-    this.saveSession(session, access);
+    this.saveSession(session);
 
   }
 
-  public async signIn(access: AccessAuthModel): Promise<void> {
-    const token = await this.http.post<string>(access.endpoint, access.user).toPromise();
+  public async signIn(endpoint: string, user: any): Promise<void> {
+    const token = await this.http.post<string>(endpoint, user).toPromise();
     const base64 = token.split('.')[1];
     const data = JSON.parse(window.atob(base64));
     const session = data.user;
     session.access_token = token;
     console.log(session);
-    this.saveSession(session, access);
+    this.saveSession(session);
   }
 
   public async recoverPassword(endpoint: string, email: string): Promise<any> {
@@ -66,10 +79,15 @@ export class AuthService {
 
   /* Use this in your Guards */
   public isAuthenticated(): boolean {
-    if (this.isMultiSession) {
-      return sessionStorage.getItem(this.sessionName) ? true : false;
+    if (this.sessionName) {
+      if (this.isMultiSession) {
+        return sessionStorage.getItem(this.sessionName) ? true : false;
+      } else {
+        return localStorage.getItem(this.sessionName) ? true : false;
+      }
     } else {
-      return localStorage.getItem(this.sessionName) ? true : false;
+      console.log('Session Name is not defined, please login again');
+      return false;
     }
   }
 
@@ -104,16 +122,13 @@ export class AuthService {
     this.router.navigateByUrl(urlToRedirect || '/login');
   }
 
-  private saveSession(session: any, access: AccessAuthModel): void {
+  private saveSession(session: any): void {
     try {
       if (session) {
-        this.sessionName = access.sessionName;
-        if (access.multiSession) {
-          this.isMultiSession = true;
-          sessionStorage.setItem(access.sessionName, JSON.stringify(session));
+        if (this.isMultiSession) {
+          sessionStorage.setItem(this.sessionName, JSON.stringify(session));
         } else {
-          this.isMultiSession = false;
-          localStorage.setItem(access.sessionName, JSON.stringify(session));
+          localStorage.setItem(this.sessionName, JSON.stringify(session));
         }
       } else {
         throw new Error('User is not defined');

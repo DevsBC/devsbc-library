@@ -34,7 +34,6 @@ import { MatMenuModule } from '@angular/material/menu';
     MatButtonModule,
     MatMenuModule
   ],
-  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
