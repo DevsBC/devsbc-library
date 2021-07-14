@@ -23,7 +23,7 @@ export class AccessComponent implements OnInit {
     this.baseUrl = this.initServerConnection('ip', 'access');
 
     // Enable this to test
-    // this.signIn();
+    this.signIn();
   }
 
 
@@ -36,15 +36,12 @@ export class AccessComponent implements OnInit {
   }
 
   public async signIn(): Promise<void> {
-    const user = { email: '', password: '' };
-    const access: AccessAuthModel = {
-      endpoint: this.baseUrl + '/signin',
-      user,
-      sessionName: this.sessionName
-    };
+    const user = { email: 'juan.aranda@injectronic.com', password: 'injectronic' };
+    const endpoint = 'https://storage.googleapis.com/injectronic_apps';  //this.baseUrl + '/signin';
+
 
     // the function saves the session
-    await this.authService.signIn(access);
+    await this.authService.signIn(endpoint, user);
     // show message
     // redirect
     // some stuff
@@ -52,14 +49,10 @@ export class AccessComponent implements OnInit {
 
   public async signUp(): Promise<void> {
     const user = { email: '', password: '', username: '', role: '' };
-    const access: AccessAuthModel = {
-      endpoint: this.baseUrl + '/signin',
-      user,
-      sessionName: this.sessionName,
-    };
+    const endpoint = this.baseUrl + '/signup';
 
     // the function saves the session
-    await this.authService.signUp(access);
+    await this.authService.signUp(endpoint, user);
     // show message
     // redirect
     // some stuff
