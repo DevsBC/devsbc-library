@@ -3,6 +3,7 @@ export * from  './lib/devsbc.module';
 export * from './lib/models/devsbc-form.model';
 export * from './lib/models/access-auth.model';
 export * from './lib/models/theme.model';
+export * from './lib/models/breakpoint.model';
 export * from './lib/services/auth.service';
 export * from './lib/services/error-interceptor.service';
 export * from './lib/services/language.service';
