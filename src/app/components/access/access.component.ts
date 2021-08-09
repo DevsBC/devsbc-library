@@ -1,5 +1,3 @@
-import { AccessAuthModel } from './../../../../projects/devsbc-components/src/lib/models/access-auth.model';
-import { environment } from 'src/environments/environment';
 import { ServerModel } from './../../models/server.model';
 import { ModeService } from './../../../../projects/devsbc-components/src/lib/services/mode.service';
 import { AuthService } from './../../../../projects/devsbc-components/src/lib/services/auth.service';
@@ -29,7 +27,7 @@ export class AccessComponent implements OnInit {
 
 
   public initServerConnection(app: string, endpoint: string): string {
-    const mode = this.modeService.getMode(environment.production);
+    const mode = this.modeService.getMode();
     const server = new ServerModel(mode, app);
     const baseUrl = server.getBaseUrl(endpoint);
     return baseUrl;
@@ -38,23 +36,12 @@ export class AccessComponent implements OnInit {
   public async signIn(): Promise<void> {
     const user = { email: 'juan.aranda@injectronic.com', password: 'injectronic' };
     const endpoint = 'https://storage.googleapis.com/injectronic_apps';  //this.baseUrl + '/signin';
-
-
-    // the function saves the session
     await this.authService.signIn(endpoint, user);
-    // show message
-    // redirect
-    // some stuff
   }
 
   public async signUp(): Promise<void> {
     const user = { email: '', password: '', username: '', role: '' };
     const endpoint = this.baseUrl + '/signup';
-
-    // the function saves the session
     await this.authService.signUp(endpoint, user);
-    // show message
-    // redirect
-    // some stuff
   }
 }

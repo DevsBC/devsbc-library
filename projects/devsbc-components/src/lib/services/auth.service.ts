@@ -1,5 +1,5 @@
 import { AccessAuthModel } from './../models/access-auth.model';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
@@ -8,23 +8,10 @@ import { Router } from '@angular/router';
 })
 export class AuthService {
 
-  private sessionName!: string;
-  private isMultiSession = false;
+  private sessionName = this.env.sessionName || 'my-session-name';
+  private isMultiSession = this.env.multiSession || false;
 
-  constructor(private http: HttpClient, private router: Router) {}
-
-  public setSessionName(access: AccessAuthModel): void {
-    try {
-      if (access) {
-        this.sessionName = access.sessionName;
-        this.isMultiSession = access.multiSession;
-      } else {
-        throw new Error('Session name is not defined');
-      }
-    } catch (error) {
-      throw error;
-    }
-  }
+  constructor(private http: HttpClient, private router: Router, @Inject('env') private env: any) {}
 
   public async signUp(endpoint: string, user: any): Promise<void> {
     // User for your model in database in Token by JSONWebToken

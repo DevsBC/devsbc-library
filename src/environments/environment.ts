@@ -5,6 +5,8 @@
 export const environment = {
   production: false,
   server: 'http://localhost:3000/api',
+  sessionName: 'inj-session',
+  multiSession: false
 };
 
 /*

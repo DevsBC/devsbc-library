@@ -1,3 +1,4 @@
+import { environment } from './../environments/environment';
 import { DevsbcModule } from './../../projects/devsbc-components/src/lib/devsbc.module';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -28,7 +29,7 @@ import { MatMenuModule } from '@angular/material/menu';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    DevsbcModule,
+    DevsbcModule.forRoot(environment),
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,

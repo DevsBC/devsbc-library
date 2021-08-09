@@ -1,6 +1,8 @@
 export * from './lib/components/devsbc-form/devsbc-form.component';
+export * from './lib/components/devsbc-multilanguage-form/devsbc-multilanguage-form.component';
 export * from  './lib/devsbc.module';
 export * from './lib/models/devsbc-form.model';
+export * from './lib/models/devsbc-mult-form.model';
 export * from './lib/models/access-auth.model';
 export * from './lib/models/theme.model';
 export * from './lib/models/breakpoint.model';
@@ -12,3 +14,4 @@ export * from './lib/services/screen-breakpoint-observer.service';
 export * from './lib/services/style-manager.service';
 export * from './lib/services/theme.service';
 export * from './lib/services/token-interceptor.service';
+export * from './lib/services/server-connection.service';

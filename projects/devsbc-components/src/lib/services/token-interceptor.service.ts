@@ -7,22 +7,16 @@ import { Observable } from 'rxjs';
 export class TokenInterceptor implements HttpInterceptor {
 
   exceptions: string[] = ['storage.googleapis'];
+
   constructor(public auth: AuthService) {}
 
-
-  setExceptions(exceptions: string[]): void {
+  public setExceptions(exceptions: string[]): void {
     this.exceptions = exceptions;
   }
 
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    console.log(request);
-    if (!this.exceptions.some(v => request.url.includes(v))) {
-      request = request.clone({
-        setHeaders: {
-          Authorization: `Bearer ${this.auth.getToken()}`
-        }
-      });
-    } else {
+  public intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    if (!this.exceptions.some(e => request.url.includes(e))) { 
+      request = request.clone({ setHeaders: { Authorization: `Bearer ${this.auth.getToken()}`} });
     }
     return next.handle(request);
   }

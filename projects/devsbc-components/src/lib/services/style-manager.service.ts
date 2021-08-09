@@ -11,7 +11,6 @@ export class StyleManagerService {
 
   public removeStyle(key: string): void {
     const existingLinkElement = getExistingLinkElementByKey(key);
-    console.log(existingLinkElement);
     if (existingLinkElement) {
       document.head.removeChild(existingLinkElement);
     }

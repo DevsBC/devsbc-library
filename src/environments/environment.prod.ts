@@ -1,4 +1,6 @@
 export const environment = {
   production: true,
-  server: 'YOUR SERVER'
+  server: 'YOUR SERVER',
+  sessionName: 'inj-session',
+  multiSession: false
 };

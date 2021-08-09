@@ -1,15 +1,19 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ModeService {
 
-  public getMode(production: boolean): string {
+  production = this.env.production;
+
+  constructor(@Inject('env') private env: any) {}
+
+  public getMode(): string {
     if (this.existsMode()) {
       return sessionStorage.getItem('mode') || 'prod';
     } else {
-      const mode = (production) ? 'prod' : 'test';
+      const mode = (this.production) ? 'prod' : 'test';
       this.setMode(mode, false);
       return mode;
     }
