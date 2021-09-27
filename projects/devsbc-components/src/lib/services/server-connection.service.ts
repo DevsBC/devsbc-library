@@ -32,7 +32,7 @@ export class ServerConnectionService {
     if (this.version) {
       url = this.server +  '/' + this.version + this.app + '/' + this.mode;
     } else {
-      url = this.server + this.app + + '/' + this.mode;
+      url = this.server + this.app + '/' + this.mode;
     }
     return url + ((endpoint) ? '/' + endpoint : '');
   }
