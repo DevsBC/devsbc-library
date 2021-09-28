@@ -21,10 +21,10 @@ interface ViewFormModel {
 
 interface FormFieldModel {
   callback?: FormCallbackModel | any;
-  element: string;
+  element: 'input' | 'textarea' | 'select';
   name: string;
   placeholder: string;
-  type: string;
+  type: 'text' | 'number' | 'tel' | 'url' | 'file' | 'password' | 'search' | 'submit' | 'date' | 'time';
   required: boolean;
   disabled?: boolean;
   /* For select */

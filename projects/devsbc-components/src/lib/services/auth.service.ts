@@ -2,6 +2,7 @@ import { AccessAuthModel } from './../models/access-auth.model';
 import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,7 @@ export class AuthService {
 
   public async signUp(endpoint: string, user: any): Promise<void> {
     // User for your model in database in Token by JSONWebToken
-    const token = await this.http.post<string>(endpoint, user).toPromise();
+    const token = await lastValueFrom(this.http.post<string>(endpoint, user));
 
     // Decode the User Model
     const base64 = token.split('.')[1];
@@ -24,15 +25,11 @@ export class AuthService {
     // The session generated for your server
     const session = data.user;
     session.access_token = token;
-
-    console.log(session);
-
     this.saveSession(session);
-
   }
 
   public async signIn(endpoint: string, user: any): Promise<void> {
-    const token = await this.http.post<string>(endpoint, user).toPromise();
+    const token = await lastValueFrom(this.http.post<string>(endpoint, user));
     const base64 = token.split('.')[1];
     const data = JSON.parse(window.atob(base64));
     const session = data.user;
@@ -41,20 +38,20 @@ export class AuthService {
     this.saveSession(session);
   }
 
-  public async recoverPassword(endpoint: string, email: string): Promise<any> {
+  public recoverPassword(endpoint: string, email: string): Promise<any> {
     // tslint:disable-next-line: max-line-length
     // You can return the data for recover, however i recommend you, send email to your customer and create a new flow based in URL tokenized
-    return await this.http.post<any>(endpoint, { email }).toPromise();
+    return lastValueFrom(this.http.post<any>(endpoint, { email }));
   }
 
   /* OPTIONAL */
-  public async verifyToken(endpoint: string, token: string): Promise<any> {
+  public verifyToken(endpoint: string, token: string): Promise<any> {
     // Use this http call for verify token in your server
-    return await this.http.post<any>(endpoint, { token }).toPromise();
+    return lastValueFrom(this.http.post<any>(endpoint, { token }));
   }
 
-  public async updatePassword(endpoint: string, email: string, password: string): Promise<any> {
-    return await this.http.post<any>(endpoint, { email, password }).toPromise();
+  public  updatePassword(endpoint: string, email: string, password: string): Promise<any> {
+    return lastValueFrom(this.http.post<any>(endpoint, { email, password }));
   }
 
   /* ACCESS TO RESTRICTED ZONES */
