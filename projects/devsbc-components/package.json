@@ -1,6 +1,6 @@
 {
   "name": "devsbc-components",
-  "version": "1.3.5",
+  "version": "1.3.6",
   "scripts": {
     "build": "ng build --configuration production devsbc-components"
   },
