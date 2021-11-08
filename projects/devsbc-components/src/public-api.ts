@@ -15,3 +15,4 @@ export * from './lib/services/style-manager.service';
 export * from './lib/services/theme.service';
 export * from './lib/services/token-interceptor.service';
 export * from './lib/services/server-connection.service';
+export * from './lib/services/context.service';

@@ -11,6 +11,7 @@ export class AuthService {
 
   private sessionName = this.env.sessionName || 'my-session-name';
   private isMultiSession = this.env.multiSession || false;
+  private onlyToken = this.env.sessionEncrypted|| false;
 
   constructor(private http: HttpClient, private router: Router, @Inject('env') private env: any) {}
 
@@ -18,23 +19,25 @@ export class AuthService {
     // User for your model in database in Token by JSONWebToken
     const token = await lastValueFrom(this.http.post<string>(endpoint, user));
 
-    // Decode the User Model
-    const base64 = token.split('.')[1];
-    const data = JSON.parse(window.atob(base64));
-
-    // The session generated for your server
-    const session = data.user;
-    session.access_token = token;
+    let session: any;
+    if (this.onlyToken) {
+      session = token;
+    } else {
+      session = this.decryptSession(token);
+      session.access_token = token;
+    }
     this.saveSession(session);
   }
 
   public async signIn(endpoint: string, user: any): Promise<void> {
     const token = await lastValueFrom(this.http.post<string>(endpoint, user));
-    const base64 = token.split('.')[1];
-    const data = JSON.parse(window.atob(base64));
-    const session = data.user;
-    session.access_token = token;
-    console.log(session);
+    let session: any;
+    if (this.onlyToken) {
+      session = token;
+    } else {
+      session = this.decryptSession(token);
+      session.access_token = token;
+    }
     this.saveSession(session);
   }
 
@@ -50,7 +53,7 @@ export class AuthService {
     return lastValueFrom(this.http.post<any>(endpoint, { token }));
   }
 
-  public  updatePassword(endpoint: string, email: string, password: string): Promise<any> {
+  public updatePassword(endpoint: string, email: string, password: string): Promise<any> {
     return lastValueFrom(this.http.post<any>(endpoint, { email, password }));
   }
 
@@ -58,7 +61,7 @@ export class AuthService {
   // Data can be any object that use for verify or the user session
   public async isAdmin(endpoint: string, data: any): Promise<any> {
     // Use this http call for verify if user has permission
-    return await this.http.post<any>(endpoint, data).toPromise();
+    return await lastValueFrom(this.http.post<any>(endpoint, data));
   }
 
   /* Use this in your Guards */
@@ -77,12 +80,16 @@ export class AuthService {
 
   /* Get the Session Object */
   public getSession(): any {
+    let session: any;
     if (this.isAuthenticated()) {
       if (this.isMultiSession) {
-        return JSON.parse(sessionStorage.getItem(this.sessionName) || '');
+        session = JSON.parse(sessionStorage.getItem(this.sessionName) || '');
       } else {
-        return JSON.parse(localStorage.getItem(this.sessionName) || '');
+        session = JSON.parse(localStorage.getItem(this.sessionName) || '');
       }
+
+      return (this.onlyToken) ? this.decryptSession(session) : session;
+
     } else {
       return null;
     }
@@ -90,11 +97,8 @@ export class AuthService {
 
   public getToken(): string {
     const session = this.getSession();
-    if (session && session.access_token) {
-      return session.access_token;
-    } else {
-      return '';
-    }
+    const token = (this.onlyToken) ? session : session?.access_token;
+    return token || '';
   }
 
   public logout(urlToRedirect?: string): void {
@@ -107,19 +111,26 @@ export class AuthService {
   }
 
   private saveSession(session: any): void {
+    session = this.onlyToken ? session : JSON.stringify(session)
     try {
       if (session) {
         if (this.isMultiSession) {
-          sessionStorage.setItem(this.sessionName, JSON.stringify(session));
+          sessionStorage.setItem(this.sessionName, session);
         } else {
-          localStorage.setItem(this.sessionName, JSON.stringify(session));
+          localStorage.setItem(this.sessionName, session);
         }
       } else {
-        throw new Error('User is not defined');
+        throw new Error('Session is not defined');
       }
     } catch (error) {
       throw error;
     }
+  }
+
+  private decryptSession(token: string): any {
+    const base64 = token.split('.')[1];
+    const data = JSON.parse(window.atob(base64));
+    return data.user;
   }
 
 }

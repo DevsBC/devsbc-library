@@ -1,5 +1,6 @@
 import { ModeService } from './mode.service';
 import { Inject, Injectable } from '@angular/core';
+import { ContextService } from './context.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class ServerConnectionService {
   private app!: string;
   private mode = 'test';
 
-  constructor(private modeService: ModeService,  @Inject('env') private env: any) { }
+  constructor(private modeService: ModeService,  @Inject('env') private env: any, private contextService: ContextService) { }
 
   public initServerConnection(app: string, endpoint: string, version?: number): string {
     this.mode = this.modeService.getMode();
@@ -29,5 +30,10 @@ export class ServerConnectionService {
       url = `${this.server}/${this.app}/${this.mode}`;
     }
     return url + ((endpoint) ? '/' + endpoint : '');
+  }
+
+  public connect(client: string, app: string, endpoint: string) {
+    const context = this.contextService.getContext();
+    return `${ this.server }/${ context }/${ client }/${ app }/${ endpoint }`;
   }
 }
