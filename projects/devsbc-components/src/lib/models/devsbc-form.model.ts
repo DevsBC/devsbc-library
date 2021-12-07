@@ -24,7 +24,7 @@ interface FormFieldModel {
   element: 'input' | 'textarea' | 'select';
   name: string;
   placeholder: string;
-  type: 'text' | 'number' | 'tel' | 'url' | 'file' | 'password' | 'search' | 'submit' | 'date' | 'time';
+  type: 'email' | 'text' | 'number' | 'tel' | 'url' | 'file' | 'password' | 'search' | 'submit' | 'date' | 'time';
   required: boolean;
   disabled?: boolean;
   /* For select */
